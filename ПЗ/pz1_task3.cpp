@@ -63,40 +63,67 @@ public:
     int getSize() {
         return size;
     }
+
+    bool pushBack(int value) {
+        if (value < -100 || value > 100) {
+            cout << "Ошибка: значение " << value << " не принадлежит промежутку [-100, 100]" << endl;
+            return false;
+        }
+
+        int newSize = size + 1;
+        int* newData = new int[newSize];
+
+        for (int i = 0; i < size; i++) {
+            newData[i] = data[i];
+        }
+
+        newData[size] = value;
+
+        delete[] data;
+        data = newData;
+        size = newSize;
+
+        return true;
+    }
 };
 
 int main() {
-    DynamicArray arr(5);
+    DynamicArray arr(3);
     
-    cout << "Размер массива: " << arr.getSize() << endl;
+    cout << "Исходный массив:" << endl;
+    cout << "Размер: " << arr.getSize() << endl;
     arr.printArray();
     
-    // ТЕСТ с норм значениями
-    cout << "\nУстанавливаем значения:" << endl;
+    cout << "\nЗаполняем массив:" << endl;
     arr.setValue(0, 10);
     arr.setValue(1, -50);
-    arr.setValue(2, 100);
-    arr.setValue(3, 0);
-    arr.setValue(4, -100);
+    arr.setValue(2, 75);
     arr.printArray();
     
-    // ТЕСТ с плохими значениями
+    cout << "\nДобавляем корректные значения:" << endl;
+    arr.pushBack(100);
+    cout << "После добавления 100:" << endl;
+    cout << "Размер: " << arr.getSize() << endl;
+    arr.printArray();
+    
+    arr.pushBack(-100);
+    cout << "После добавления -100:" << endl;
+    cout << "Размер: " << arr.getSize() << endl;
+    arr.printArray();
+    
+    arr.pushBack(0);
+    cout << "После добавления 0:" << endl;
+    cout << "Размер: " << arr.getSize() << endl;
+    arr.printArray();
+    
     cout << "\nТестируем некорректные значения:" << endl;
-    arr.setValue(0, 150);  // Превышение диапазона
-    arr.setValue(5, 10);   // Выход за границы
-    arr.setValue(-1, 10);  // Отрицательный индекс
+    arr.pushBack(150);
+    arr.pushBack(-150);
     
-    cout << "\nТестируем геттер:" << endl;
-    int value;
-    if (arr.getValue(2, value)) {
-        cout << "Значение по индексу 2: " << value << endl;
-    }
+    cout << "Финальный массив:" << endl;
+    cout << "Размер: " << arr.getSize() << endl;
+    arr.printArray();
     
-    if (arr.getValue(10, value)) {
-        cout << "Значение по индексу 10: " << value << endl;
-    }
-    
-    // ТЕСТ конструктора копирования
     cout << "\nТестируем конструктор копирования:" << endl;
     DynamicArray arrCopy(arr);
     cout << "Оригинальный массив: ";
@@ -104,9 +131,8 @@ int main() {
     cout << "Скопированный массив: ";
     arrCopy.printArray();
     
-    // Изменяем оригинальный массив
-    arr.setValue(0, 99);
-    cout << "После изменения оригинала:" << endl;
+    arr.pushBack(42);
+    cout << "После добавления 42 в оригинал:" << endl;
     cout << "Оригинальный массив: ";
     arr.printArray();
     cout << "Скопированный массив: ";
