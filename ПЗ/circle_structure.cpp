@@ -13,7 +13,7 @@ struct Circle{
 
 Circle readCircle(){
     Circle c;
-    cin >> c.center.x >> c.center.y >> c.radius;
+    cin >> c.center.x >> c.center.y >> c radius;
     return c;
 }
 
