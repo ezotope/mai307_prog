@@ -1,8 +1,6 @@
-# Настройки для корректного отображения русских символов
-*.cpp text eol=lf
-*.h text eol=lf
-*.txt text eol=lf
-*.md text eol=lf
-
-# Установка кодировки UTF-8 для всех текстовых файлов
+*.cpp text eol=lf charset=utf-8
+*.h text eol=lf charset=utf-8
+*.txt text eol=lf charset=utf-8
+*.md text eol=lf charset=utf-8
+*.csv text eol=lf charset=utf-8
 * text=auto
