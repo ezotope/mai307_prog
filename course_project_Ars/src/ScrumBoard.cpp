@@ -29,6 +29,35 @@ const std::vector<Developer>& ScrumBoard::GetDevelopers() const {
   return developers_;
 }
 
+int ScrumBoard::AddTask(const std::string& title, const std::string& description) {
+  if (title.empty()) {
+    return 0;
+  }
+  Task task;
+  task.id = next_task_id_;
+  task.title = title;
+  task.description = description;
+  task.status = TaskStatus::Backlog;
+  task.assigned_developer.clear();
+  tasks_.push_back(task);
+  ++next_task_id_;
+  return task.id;
+}
+
+const std::vector<Task>& ScrumBoard::GetTasks() const {
+  return tasks_;
+}
+
+std::vector<Task> ScrumBoard::GetTasksByStatus(TaskStatus status) const {
+  std::vector<Task> filtered;
+  for (const Task& task : tasks_) {
+    if (task.status == status) {
+      filtered.push_back(task);
+    }
+  }
+  return filtered;
+}
+
 bool ScrumBoard::AssignTask(int task_id, const std::string& developer_name) {
   if (!DeveloperExists(developer_name)) {
     return false;
@@ -42,6 +71,57 @@ bool ScrumBoard::AssignTask(int task_id, const std::string& developer_name) {
     task->status = TaskStatus::Assigned;
   }
   return true;
+}
+
+bool ScrumBoard::ChangeTaskStatus(int task_id, TaskStatus new_status) {
+  Task* task = FindTaskById(task_id);
+  if (task == nullptr) {
+    return false;
+  }
+  task->status = new_status;
+  return true;
+}
+
+std::string ScrumBoard::TaskStatusToString(TaskStatus status) {
+  switch (status) {
+    case TaskStatus::Backlog:
+      return "Backlog";
+    case TaskStatus::Assigned:
+      return "Assigned";
+    case TaskStatus::InProgress:
+      return "InProgress";
+    case TaskStatus::Blocked:
+      return "Blocked";
+    case TaskStatus::Done:
+      return "Done";
+  }
+  return "Backlog";
+}
+
+static TaskStatus AllStatuses[] = {
+    TaskStatus::Backlog,
+    TaskStatus::Assigned,
+    TaskStatus::InProgress,
+    TaskStatus::Blocked,
+    TaskStatus::Done};
+
+bool ScrumBoard::TaskStatusFromString(const std::string& text, TaskStatus& status_out) {
+  for (TaskStatus status : AllStatuses) {
+    if (TaskStatusToString(status) == text) {
+      status_out = status;
+      return true;
+    }
+  }
+  return false;
+}
+
+Task* ScrumBoard::FindTaskById(int task_id) {
+  for (Task& task : tasks_) {
+    if (task.id == task_id) {
+      return &task;
+    }
+  }
+  return nullptr;
 }
 
 bool ScrumBoard::DeveloperExists(const std::string& developer_name) const {
@@ -241,3 +321,4 @@ bool ScrumBoard::LoadFromXML(const std::string& file_path) {
   next_task_id_ = loaded_next_id;
   return true;
 }
+
